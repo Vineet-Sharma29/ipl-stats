@@ -79,7 +79,6 @@ export default {
   },
   created() {
     this.setChartData(this.data);
-    console.log("chartData is ", this.data);
   },
   methods: {
     setChartData(values) {
