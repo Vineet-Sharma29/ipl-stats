@@ -4,37 +4,23 @@
       <div class="flex flex-wrap">
         <div class="flex flex-wrap mb-3">
           <button
-            class="text-xs font-semibold rounded-full px-4 py-1 mx-3  leading-normal bg-blue-500 border border-blue text-blue hover:bg-blue hover:text-white"
-          >
-            Most Runs
-          </button>
+            @click="getRunsData"
+            class="border border-blue-500 text-xs font-semibold rounded-full px-4 py-1 mx-3 leading-normal border border-blue"
+            v-bind:class="[active == 0 ? activeClass : '']"
+          >Most Runs</button>
           <button
-            class="border border-blue-500 text-xs font-semibold rounded-full px-4 py-1 mx-3  leading-normal border border-blue text-blue hover:bg-blue"
-          >
-            Most Wickets
-          </button>
+            @click="getWicketData"
+            class="border border-blue-500 text-xs font-semibold rounded-full px-4 py-1 mx-3 leading-normal border border-blue"
+            v-bind:class="[active == 1 ? activeClass : '']"
+          >Most Wickets</button>
           <button
-            class="border border-blue-500 text-xs font-semibold rounded-full px-4 py-1 leading-normal border border-purple text-purple hover:bg-purple"
-          >
-            Most Six
-          </button>
-          <button
-            class="border border-blue-500 text-xs font-semibold rounded-full px-4 py-1 mx-3  leading-normal border border-blue text-blue hover:bg-blue"
-          >
-            Most Four
-          </button>
-          <button
-            class="border border-blue-500 text-xs font-semibold rounded-full px-4 py-1 leading-normal border border-purple text-purple hover:bg-purple"
-          >
-            Most Catches
-          </button>
+            @click="getFielderData"
+            v-bind:class="[active == 2 ? activeClass : '']"
+            class="border border-blue-500 text-xs font-semibold rounded-full px-4 py-1 mx-3 leading-normal border border-blue"
+          >Most Field Assist</button>
         </div>
       </div>
-      <bar-graph
-        :height="280"
-        :chart-data="datacollection"
-        :legend="false"
-      ></bar-graph>
+      <bar-graph v-if="isLoaded" :height="280" :chartData="datacollection" :legend="false"></bar-graph>
     </div>
   </div>
 </template>
@@ -44,58 +30,79 @@ import BarGraph from "./graphs/BarGraph";
 
 export default {
   name: "GraphCard",
-  props: [],
-  components: {
-    "bar-graph": BarGraph
+  props: {
+    isLoaded: {
+      type: Boolean,
+      default: false
+    },
+    runsData: {
+      type: Array,
+      default: () => []
+    },
+    wicketsData: {
+      type: Array,
+      default: () => []
+    },
+    fielderData: {
+      type: Array,
+      default: () => []
+    }
   },
   data() {
     return {
       datacollection: null,
-      isLoaded: false
+      active: 0,
+      activeClass: "bg-blue-500"
     };
   },
-  mounted() {
-    this.setChartData();
-    this.isLoaded = true;
+  components: {
+    "bar-graph": BarGraph
+  },
+  created() {
+    this.setChartData(this.runsData);
   },
   methods: {
-    getRandomInt() {
-      return Math.floor(Math.random() * (50 - 5 + 1)) + 5;
+    getWicketData() {
+      this.setChartData(this.wicketsData);
+      this.active = 1;
     },
-    setChartData() {
-      let gradient = document
-        .getElementById("bar-chart")
-        .getContext("2d")
-        .createLinearGradient(0, 0, 0, 450);
-      gradient.addColorStop(0, "rgba(0, 0,0, 0)");
-      gradient.addColorStop(0, "rgba(0, 0, 0, 0)");
-      gradient.addColorStop(0, "rgba(0, 0, 0, 0)");
+
+    getRunsData() {
+      this.setChartData(this.runsData);
+      this.active = 0;
+    },
+
+    getFielderData() {
+      this.setChartData(this.fielderData);
+      this.active = 2;
+    },
+
+    setChartData(values) {
+      var labels = [],
+        data = [];
+
+      if (this.isLoaded) {
+        console.log("values are ", values);
+        for (var i = 0; i < values.length; i++) {
+          labels.push(values[i]["label"]);
+          data.push(values[i]["value"]);
+        }
+      }
+
+      console.log(
+        "labels and values are",
+        labels,
+        data,
+        " --- ",
+        this.isLoaded
+      );
 
       this.datacollection = {
-        labels: [
-          this.getRandomInt(),
-          this.getRandomInt(),
-          this.getRandomInt(),
-          this.getRandomInt(),
-          this.getRandomInt(),
-          this.getRandomInt(),
-          this.getRandomInt(),
-          this.getRandomInt()
-        ],
+        labels: labels,
         datasets: [
           {
-            label: "Data One",
-            backgroundColor: "#f87979",
-            data: [
-              this.getRandomInt(),
-              this.getRandomInt(),
-              this.getRandomInt(),
-              this.getRandomInt(),
-              this.getRandomInt(),
-              this.getRandomInt(),
-              this.getRandomInt(),
-              this.getRandomInt()
-            ]
+            backgroundColor: "#4299e1",
+            data: data
           }
         ]
       };
