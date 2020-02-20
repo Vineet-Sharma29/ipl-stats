@@ -7,31 +7,20 @@
             @click="getRunsData"
             class="border border-blue-500 text-xs font-semibold rounded-full px-4 py-1 mx-3 leading-normal border border-blue"
             v-bind:class="[active == 0 ? activeClass : '']"
-          >
-            Most Runs
-          </button>
+          >Most Runs</button>
           <button
             @click="getWicketData"
             class="border border-blue-500 text-xs font-semibold rounded-full px-4 py-1 mx-3 leading-normal border border-blue"
             v-bind:class="[active == 1 ? activeClass : '']"
-          >
-            Most Wickets
-          </button>
+          >Most Wickets</button>
           <button
             @click="getFielderData"
             v-bind:class="[active == 2 ? activeClass : '']"
             class="border border-blue-500 text-xs font-semibold rounded-full px-4 py-1 mx-3 leading-normal border border-blue"
-          >
-            Most Field Assist
-          </button>
+          >Most Field Assist</button>
         </div>
       </div>
-      <bar-graph
-        v-if="isLoaded"
-        :height="280"
-        :chartData="datacollection"
-        :legend="false"
-      ></bar-graph>
+      <bar-graph v-if="isLoaded" :height="280" :chartData="datacollection" :legend="false"></bar-graph>
     </div>
   </div>
 </template>
@@ -98,8 +87,6 @@ export default {
           data.push(values[i]["value"]);
         }
       }
-
-      =
 
       this.datacollection = {
         labels: labels,
